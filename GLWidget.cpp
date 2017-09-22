@@ -7,9 +7,6 @@
 
 GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent)
 {
-	QGLFormat fmt;
-	fmt.setDoubleBuffer(true);
-	setFormat(fmt);
 	rotationX = 21.0;
 	rotationY = -57.0;
 	rotationZ = 0.0;
