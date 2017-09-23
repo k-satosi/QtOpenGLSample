@@ -4,6 +4,8 @@
 #include <QGLWidget>
 #include <QGLFunctions>
 #include <QVector3D>
+#include <QMatrix4x4>
+#include <QQuaternion>
 
 struct Vertex
 {
@@ -14,33 +16,63 @@ struct Vertex
 class Object : protected QGLFunctions
 {
 public:
-	Object() {
+	Object() : m_scale(QVector3D(1, 1, 1)) {
 		initializeGLFunctions();
-		memset(m_pos, 0, sizeof(m_pos));
-		m_scale[0] = 1;
-		m_scale[1] = 1;
-		m_scale[2] = 1;
 	}
 
 	virtual ~Object() {}
 
-	void setColor(QColor &color) {
-		m_color[0] = (GLfloat)color.redF();
-		m_color[1] = (GLfloat)color.greenF();
-		m_color[2] = (GLfloat)color.blueF();
+	void setColor(const QColor &color) {
+		m_color = color;
 	}
+
 	void render() {
+		GLfloat color[] = {
+			(GLfloat)m_color.redF(),
+			(GLfloat)m_color.greenF(),
+			(GLfloat)m_color.blueF()
+		};
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
 		glPushMatrix();
-		glTranslatef(m_pos[0], m_pos[1], m_pos[2]);
-		glScalef(m_scale[0], m_scale[1], m_scale[2]);
+		QMatrix4x4 matrix;
+		matrix.scale(m_scale);
+		matrix.rotate(m_quaternion);
+		matrix.translate(m_pos);
+		glMultMatrix(matrix.data());
 		draw();
 		glPopMatrix();
 	}
 
-	void translate(QVector3D &pos) {
-		m_pos[0] = (GLfloat)pos.x();
-		m_pos[1] = (GLfloat)pos.y();
-		m_pos[2] = (GLfloat)pos.z();
+	inline void glMultMatrix(const GLdouble *matrix) {
+		glMultMatrixd(matrix);
+	}
+
+	inline void glMultMatrix(const GLfloat *matrix) {
+		glMultMatrixf(matrix);
+	}
+
+	void translate(const QVector3D &pos) {
+		m_pos = pos;
+	}
+
+	void rotate(const QVector3D &vec, float angle) {
+		QQuaternion q = QQuaternion::fromAxisAndAngle(vec, angle);
+		m_quaternion *= q;
+	}
+
+	void rotateX(qreal angle) {
+		QVector3D vec(1, 0, 0);
+		rotate(vec, angle);
+	}
+
+	void rotateY(qreal angle) {
+		QVector3D vec(0, 1, 0);
+		rotate(vec, angle);
+	}
+
+	void rotateZ(qreal angle) {
+		QVector3D vec(0, 0, 1);
+		rotate(vec, angle);
 	}
 
 protected:
@@ -49,9 +81,10 @@ protected:
 	QVector<Vertex> m_vertexArray;
 	QVector<GLuint> m_indexArray;
 
-	GLfloat m_pos[3];
-	GLfloat m_scale[3];
-	GLfloat m_color[3];
+	QVector3D m_pos;
+	QVector3D m_scale;
+	QColor m_color;
+	QQuaternion m_quaternion;
 #ifdef _USE_VBO
 	GLuint m_vboVertex;
 	GLuint m_vboIndex;

@@ -5,7 +5,7 @@
 class Plane : public Object
 {
 public:
-	Plane(QVector3D &normal);
+	Plane(const QVector3D &normal);
 	~Plane();
 
 protected:

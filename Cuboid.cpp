@@ -28,9 +28,7 @@ static GLuint i[] = {
 
 Cuboid::Cuboid(qreal x, qreal y, qreal z)
 {
-	m_scale[0] = (GLfloat)x;
-	m_scale[1] = (GLfloat)y;
-	m_scale[2] = (GLfloat)z;
+	m_scale = QVector3D(x, y, z);
 #ifdef _USE_VBO
 	glGenBuffers(1, &m_vboVertex);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboVertex);
@@ -57,8 +55,6 @@ Cuboid::~Cuboid()
 
 void Cuboid::draw()
 {
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, m_color);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 

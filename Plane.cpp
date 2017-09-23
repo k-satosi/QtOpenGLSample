@@ -1,6 +1,6 @@
 #include "Plane.h"
 
-Plane::Plane(QVector3D &normal)
+Plane::Plane(const QVector3D &normal)
 {
 	(void)normal;
 
@@ -46,8 +46,6 @@ Plane::~Plane()
 
 void Plane::draw()
 {
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, m_color);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 

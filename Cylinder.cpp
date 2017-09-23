@@ -5,9 +5,7 @@
 Cylinder::Cylinder(qreal radius, qreal height, int step) :
 	m_step(step)
 {
-	m_scale[0] = (GLfloat)radius;
-	m_scale[1] = (GLfloat)height;
-	m_scale[2] = (GLfloat)radius;
+	m_scale = QVector3D(radius, height, radius);
 	int index = 0;
 	for (int deg = 0; deg <= 360; deg += m_step) {
 		GLfloat rad = (GLfloat)deg * M_PI / 180;
@@ -80,8 +78,6 @@ Cylinder::~Cylinder()
 
 void Cylinder::draw()
 {
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, m_color);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 
