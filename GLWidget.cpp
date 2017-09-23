@@ -21,33 +21,55 @@ GLWidget::~GLWidget()
 
 void GLWidget::addCylinder()
 {
-	Object *o1 = new Cylinder(1, 2);
-	QColor red(Qt::red);
-	QVector3D pos1(1.5, 0, 0);
-	o1->setColor(red);
-	o1->translate(pos1);
-	m_objectList.append(o1);
+	Object *o = new Cylinder(1, 2);
+	QColor color(Qt::red);
+	QVector3D pos(1.5, 0, 0);
+	o->setColor(color);
+	o->translate(pos);
+	m_objectList << o;
 }
 
 void GLWidget::addCuboid()
 {
-	Object *o2 = new Cuboid(1, 2, 3);
-	QColor green(Qt::green);
-	QVector3D pos2(-1, 0, 0);
-	o2->setColor(green);
-	o2->translate(pos2);
-	m_objectList.append(o2);
+	Object *o = new Cuboid(1, 2, 3);
+	QColor color(Qt::green);
+	QVector3D pos(-1, 0, 0);
+	o->setColor(color);
+	o->translate(pos);
+	m_objectList << o;
 }
 
 void GLWidget::addPlane()
 {
 	QVector3D normal(0, 1, 0);
-	Object *o3 = new Plane(normal);
-	QColor blue(Qt::blue);
-	QVector3D pos3(0, 0, 0);
-	o3->setColor(blue);
-	o3->translate(pos3);
-	m_objectList.append(o3);
+	Object *o = new Plane(normal);
+	QColor color(Qt::blue);
+	QVector3D pos(0, 0, 0);
+	o->setColor(color);
+	o->translate(pos);
+	m_objectList << o;
+}
+
+void GLWidget::addPlane2()
+{
+	QVector3D normal(0, 0, 1);
+	Object *o = new Plane(normal);
+	QColor color(Qt::yellow);
+	QVector3D pos(0, 0, -1.5);
+	o->setColor(color);
+	o->translate(pos);
+	m_objectList << o;
+}
+
+void GLWidget::addPlane3()
+{
+	QVector3D normal(1, 0, 0);
+	Object *o = new Plane(normal);
+	QColor color(Qt::magenta);
+	QVector3D pos(-1.5, 0, 0);
+	o->setColor(color);
+	o->translate(pos);
+	m_objectList << o;
 }
 
 void GLWidget::initializeGL()
@@ -62,6 +84,8 @@ void GLWidget::initializeGL()
 	addCylinder();
 	addCuboid();
 	addPlane();
+	addPlane2();
+	addPlane3();
 }
 
 void GLWidget::resizeGL(int width, int height)

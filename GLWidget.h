@@ -27,6 +27,8 @@ private:
 	void addCuboid();
 	void addCylinder();
 	void addPlane();
+	void addPlane2();
+	void addPlane3();
 
 	QList<Object*> m_objectList;
 

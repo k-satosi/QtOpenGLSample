@@ -6,6 +6,7 @@
 #include <QVector3D>
 #include <QMatrix4x4>
 #include <QQuaternion>
+#include <QtCore/qmath.h>
 
 struct Vertex
 {
@@ -35,9 +36,9 @@ public:
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
 		glPushMatrix();
 		QMatrix4x4 matrix;
-		matrix.scale(m_scale);
-		matrix.rotate(m_quaternion);
 		matrix.translate(m_pos);
+		matrix.rotate(m_quaternion);
+		matrix.scale(m_scale);
 		glMultMatrix(matrix.data());
 		draw();
 		glPopMatrix();
@@ -57,7 +58,7 @@ public:
 
 	void rotate(const QVector3D &vec, float angle) {
 		QQuaternion q = QQuaternion::fromAxisAndAngle(vec, angle);
-		m_quaternion *= q;
+		m_quaternion = q * m_quaternion;
 	}
 
 	void rotateX(qreal angle) {

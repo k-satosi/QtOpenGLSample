@@ -2,8 +2,6 @@
 
 Plane::Plane(const QVector3D &normal)
 {
-	(void)normal;
-
 	Vertex v0 = { { 0, 0, 0 }, { 0, 1, 0 } };
 	Vertex v1 = { { 100, 0, 100 }, { 0, 1, 0 } };
 	Vertex v2 = { { -100, 0, 100 }, { 0, 1, 0 } };
@@ -34,6 +32,22 @@ Plane::Plane(const QVector3D &normal)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indexArray.size() * sizeof(GLuint),
 				 m_indexArray.data(), GL_STATIC_DRAW);
 #endif // _USE_VBO
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+	QVector3D defaultNormal(0, 1, 0);
+	QVector3D nn = normal;
+	nn.normalize();
+	QVector3D axis = QVector3D::crossProduct(defaultNormal, nn);
+	qreal dp = QVector3D::dotProduct(defaultNormal, nn);
+	qreal angle = qAcos(dp);
+	angle *= 180.0 / M_PI;   // radians to degrees
+#else
+	QQuaternion q = QQuaternion::rotationTo(defaultNormal, normal);
+	QVector3D axis;
+	qreal angle;
+	q.getAxisAndAngle(&axis, &angle);
+#endif
+	rotate(axis, angle);
 }
 
 Plane::~Plane()
