@@ -33,8 +33,8 @@ Plane::Plane(const QVector3D &normal)
 				 m_indexArray.data(), GL_STATIC_DRAW);
 #endif // _USE_VBO
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	QVector3D defaultNormal(0, 1, 0);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	QVector3D nn = normal;
 	nn.normalize();
 	QVector3D axis = QVector3D::crossProduct(defaultNormal, nn);
@@ -44,7 +44,7 @@ Plane::Plane(const QVector3D &normal)
 #else
 	QQuaternion q = QQuaternion::rotationTo(defaultNormal, normal);
 	QVector3D axis;
-	qreal angle;
+	float angle;
 	q.getAxisAndAngle(&axis, &angle);
 #endif
 	rotate(axis, angle);
