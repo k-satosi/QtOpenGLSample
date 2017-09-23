@@ -21,6 +21,9 @@ public:
 		m_scale[1] = 1;
 		m_scale[2] = 1;
 	}
+
+	virtual ~Object() {}
+
 	void setColor(QColor &color) {
 		m_color[0] = (GLfloat)color.redF();
 		m_color[1] = (GLfloat)color.greenF();

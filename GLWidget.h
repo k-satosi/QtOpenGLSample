@@ -13,6 +13,7 @@ class GLWidget : public QGLWidget, protected QGLFunctions
 
 public:
 	GLWidget(QWidget *parent = 0);
+	~GLWidget();
 
 protected:
 	void initializeGL();

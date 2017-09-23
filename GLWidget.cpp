@@ -12,6 +12,13 @@ GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent)
 	rotationZ = 0.0;
 }
 
+GLWidget::~GLWidget()
+{
+	foreach (Object* o, m_objectList) {
+		delete o;
+	}
+}
+
 void GLWidget::addCylinder()
 {
 	Object *o1 = new Cylinder(1, 2);

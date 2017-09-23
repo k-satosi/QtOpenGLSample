@@ -70,6 +70,14 @@ Cylinder::Cylinder(qreal radius, qreal height, int step) :
 #endif // _USE_VBO
 }
 
+Cylinder::~Cylinder()
+{
+#ifdef _USE_VBO
+	glDeleteBuffers(1, &m_vboVertex);
+	glDeleteBuffers(1, &m_vboIndex);
+#endif
+}
+
 void Cylinder::draw()
 {
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, m_color);

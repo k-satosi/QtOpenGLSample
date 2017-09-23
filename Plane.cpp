@@ -36,6 +36,14 @@ Plane::Plane(QVector3D &normal)
 #endif // _USE_VBO
 }
 
+Plane::~Plane()
+{
+#ifdef _USE_VBO
+	glDeleteBuffers(1, &m_vboVertex);
+	glDeleteBuffers(1, &m_vboIndex);
+#endif // _USE_VBO
+}
+
 void Plane::draw()
 {
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, m_color);

@@ -46,6 +46,15 @@ Cuboid::Cuboid(qreal x, qreal y, qreal z)
 #endif // _USE_VBO
 }
 
+Cuboid::~Cuboid()
+{
+#ifdef _USE_VBO
+	glDeleteBuffers(1, &m_vboVertex);
+	glDeleteBuffers(1. &m_vboNormal);
+	glDeleteBuffers(1, &m_vboIndex);
+#endif // _USE_VBO
+}
+
 void Cuboid::draw()
 {
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, m_color);
