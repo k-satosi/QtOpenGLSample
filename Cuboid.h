@@ -10,7 +10,4 @@ public:
 
 protected:
 	void draw();
-
-private:
-	GLuint m_vboNormal;
 };

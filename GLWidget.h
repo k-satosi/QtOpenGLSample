@@ -1,7 +1,5 @@
 #pragma once
 
-#include <QColor>
-#include <QWidget>
 #include <QGLWidget>
 #include <QGLFunctions>
 

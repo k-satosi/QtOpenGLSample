@@ -94,7 +94,11 @@ void GLWidget::resizeGL(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	GLfloat x = GLfloat(width) / height;
+#ifdef QT_OPENGL_ES_1
+	glFrustumf(-x, x, -1.0, 1.0, 4.0, 15.0);
+#else
 	glFrustum(-x, x, -1.0, 1.0, 4.0, 15.0);
+#endif
 	glMatrixMode(GL_MODELVIEW);
 }
 

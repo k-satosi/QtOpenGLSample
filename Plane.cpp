@@ -9,18 +9,18 @@ Plane::Plane(const QVector3D &normal)
 	Vertex v4 = { { 100, 0, -100 }, { 0, 1, 0 } } ;
 	int index = 0;
 
-	m_vertexArray.append(v0);
-	m_indexArray.append(index++);
-	m_vertexArray.append(v1);
-	m_indexArray.append(index++);
-	m_vertexArray.append(v2);
-	m_indexArray.append(index++);
-	m_vertexArray.append(v3);
-	m_indexArray.append(index++);
-	m_vertexArray.append(v4);
-	m_indexArray.append(index++);
-	m_vertexArray.append(v1);
-	m_indexArray.append(index++);
+	m_vertexArray << v0;
+	m_indexArray << index++;
+	m_vertexArray << v1;
+	m_indexArray <<index++;
+	m_vertexArray << v2;
+	m_indexArray << index++;
+	m_vertexArray << v3;
+	m_indexArray << index++;
+	m_vertexArray << v4;
+	m_indexArray << index++;
+	m_vertexArray << v1;
+	m_indexArray << index++;
 #ifdef _USE_VBO
 	glGenBuffers(1, &m_vboVertex);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboVertex);
@@ -74,7 +74,6 @@ void Plane::draw()
 	glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)m_vertexArray.data() + offsetof(Vertex, n));
 	glDrawElements(GL_TRIANGLE_FAN, 6, GL_UNSIGNED_INT, m_indexArray.data());
 #endif // _USE_VBO
-
 
 #ifdef _USE_VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

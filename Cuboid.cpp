@@ -1,23 +1,38 @@
 #include "Cuboid.h"
 
-static GLfloat v[] = {
-	1,1,1,  0,1,1,  0,0,1,  1,0,1,
-	1,1,1,  1,0,1,  1,0,0,  1,1,0,
-	1,1,1,  1,1,0,  0,1,0,  0,1,1,
-	0,1,1,  0,1,0,  0,0,0,  0,0,1,
-	0,0,0,  1,0,0,  1,0,1,  0,0,1,
-	1,0,0,  0,0,0,  0,1,0,  1,1,0
+static const Vertex v[] = {
+	{ { 1, 1, 1 }, { 0, 0, 1 } },
+	{ { 0, 1, 1 }, { 0, 0, 1 } },
+	{ { 0, 0, 1 }, { 0, 0, 1 } },
+	{ { 1, 0, 1 }, { 0, 0, 1 } },
+
+	{ { 1, 1, 1 }, { 1, 0, 0 } },
+	{ { 1, 0, 1 }, { 1, 0, 0 } },
+	{ { 1, 0, 0 }, { 1, 0, 0 } },
+	{ { 1, 1, 0 }, { 1, 0, 0 } },
+
+	{ { 1, 1, 1 }, { 0, 1, 0 } },
+	{ { 1, 1, 0 }, { 0, 1, 0 } },
+	{ { 0, 1, 0 }, { 0, 1, 0 } },
+	{ { 0, 1, 1 }, { 0, 1, 0 } },
+
+	{ { 0, 1, 1 }, { -1, 0, 0 } },
+	{ { 0, 1, 0 }, { -1, 0, 0 } },
+	{ { 0, 0, 0 }, { -1, 0, 0 } },
+	{ { 0, 0, 1 }, { -1, 0, 0 } },
+
+	{ { 0, 0, 0 }, { 0, -1, 0 } },
+	{ { 1, 0, 0 }, { 0, -1, 0 } },
+	{ { 1, 0, 1 }, { 0, -1, 0 } },
+	{ { 0, 0, 1 }, { 0, -1, 0 } },
+
+	{ { 1, 0, 0 }, { 0, 0, -1 } },
+	{ { 0, 0, 0 }, { 0, 0, -1 } },
+	{ { 0, 1, 0 }, { 0, 0, -1 } },
+	{ { 1, 1, 0 }, { 0, 0, -1 } },
 };
 
-static GLfloat n[] = {
-	0,0,1,   0,0,1,   0,0,1,   0,0,1,
-	1,0,0,   1,0,0,   1,0,0,   1,0,0,
-	0,1,0,   0,1,0,   0,1,0,   0,1,0,
-	-1,0,0,  -1,0,0,  -1,0,0,  -1,0,0,
-	0,-1,0,  0,-1,0,  0,-1,0,  0,-1,0,
-	0,0,-1,  0,0,-1,  0,0,-1,  0,0,-1,
-};
-static GLuint i[] = {
+static const GLuint i[] = {
 	0, 1, 2,   2, 3, 0,
 	4, 5, 6,   6, 7, 4,
 	8, 9,10,   10,11,8,
@@ -28,15 +43,11 @@ static GLuint i[] = {
 
 Cuboid::Cuboid(qreal x, qreal y, qreal z)
 {
-	m_scale = QVector3D(x, y, z);
+	scale(QVector3D(x, y, z));
 #ifdef _USE_VBO
 	glGenBuffers(1, &m_vboVertex);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboVertex);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(v), v, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &m_vboNormal);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vboNormal);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(n), n, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &m_vboIndex);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vboIndex);
@@ -48,7 +59,6 @@ Cuboid::~Cuboid()
 {
 #ifdef _USE_VBO
 	glDeleteBuffers(1, &m_vboVertex);
-	glDeleteBuffers(1. &m_vboNormal);
 	glDeleteBuffers(1, &m_vboIndex);
 #endif // _USE_VBO
 }
@@ -60,17 +70,15 @@ void Cuboid::draw()
 
 #ifdef _USE_VBO
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboVertex);
-	glVertexPointer(3, GL_FLOAT, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vboNormal);
-	glNormalPointer(GL_FLOAT, 0, 0);
+	glVertexPointer(3, GL_FLOAT, sizeof(Vertex), 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vboIndex);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #else
-	glVertexPointer(3, GL_FLOAT, 0, v);
-	glNormalPointer(GL_FLOAT, 0, n);
+	glVertexPointer(3, GL_FLOAT, sizeof(Vertex), v);
+	glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)v + offsetof(Vertex, n));
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, i);
 #endif
 	glDisableClientState(GL_VERTEX_ARRAY);

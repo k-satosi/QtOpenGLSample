@@ -1,7 +1,5 @@
 #pragma once
 
-#include <QList>
-#include <QGLWidget>
 #include <QGLFunctions>
 #include <QVector3D>
 #include <QMatrix4x4>
@@ -44,12 +42,8 @@ public:
 		glPopMatrix();
 	}
 
-	inline void glMultMatrix(const GLdouble *matrix) {
-		glMultMatrixd(matrix);
-	}
-
-	inline void glMultMatrix(const GLfloat *matrix) {
-		glMultMatrixf(matrix);
+	void scale(const QVector3D &s) {
+		m_scale = s;
 	}
 
 	void translate(const QVector3D &pos) {
@@ -81,13 +75,22 @@ protected:
 
 	QVector<Vertex> m_vertexArray;
 	QVector<GLuint> m_indexArray;
+#ifdef _USE_VBO
+	GLuint m_vboVertex;
+	GLuint m_vboIndex;
+#endif
+
+private:
+	inline void glMultMatrix(const GLdouble *matrix) {
+		glMultMatrixd(matrix);
+	}
+
+	inline void glMultMatrix(const GLfloat *matrix) {
+		glMultMatrixf(matrix);
+	}
 
 	QVector3D m_pos;
 	QVector3D m_scale;
 	QColor m_color;
 	QQuaternion m_quaternion;
-#ifdef _USE_VBO
-	GLuint m_vboVertex;
-	GLuint m_vboIndex;
-#endif
 };
