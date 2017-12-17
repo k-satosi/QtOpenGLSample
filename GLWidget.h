@@ -3,6 +3,8 @@
 #include <QGLWidget>
 #include <QGLFunctions>
 
+#define AREA_NUM 2
+
 class Object;
 
 class GLWidget : public QGLWidget, protected QGLFunctions
@@ -27,11 +29,15 @@ private:
 	void addPlane();
 	void addPlane2();
 	void addPlane3();
+	void paintArea(int area);
+	int getPointedArea(int x, int y);
 
 	QList<Object*> m_objectList;
 
-	GLfloat rotationX;
-	GLfloat rotationY;
-	GLfloat rotationZ;
+	GLfloat rotationX[AREA_NUM];
+	GLfloat rotationY[AREA_NUM];
+	GLfloat rotationZ[AREA_NUM];
 	QPoint lastPos;
+
+	QSize m_windowSize;
 };

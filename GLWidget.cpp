@@ -5,11 +5,15 @@
 #include "Cuboid.h"
 #include "Plane.h"
 
+static const int MARGIN = 5;
+
 GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent)
 {
-	rotationX = 21.0;
-	rotationY = -57.0;
-	rotationZ = 0.0;
+	for (int i = 0; i < AREA_NUM; i++) {
+		rotationX[i] = 21.0;
+		rotationY[i] = -57.0;
+		rotationZ[i] = 0.0;
+	}
 }
 
 GLWidget::~GLWidget()
@@ -90,7 +94,19 @@ void GLWidget::initializeGL()
 
 void GLWidget::resizeGL(int width, int height)
 {
-	glViewport(0, 0, width, height);
+	m_windowSize.setWidth(width);
+	m_windowSize.setHeight(height);
+}
+
+void GLWidget::paintArea(int area)
+{
+	int width = m_windowSize.width() / AREA_NUM - 2 * MARGIN;
+	int height = m_windowSize.height() - 2 * MARGIN;
+	int posX = width * area + MARGIN * (area + 1);
+	int posY = MARGIN;
+
+	glViewport(posX, posY, width, height);
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	GLfloat x = GLfloat(width) / height;
@@ -99,22 +115,25 @@ void GLWidget::resizeGL(int width, int height)
 #else
 	glFrustum(-x, x, -1.0, 1.0, 4.0, 15.0);
 #endif
+
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(0.0, -0.5, -12.0);
+	glRotatef(rotationX[area], 1.0, 0.0, 0.0);
+	glRotatef(rotationY[area], 0.0, 1.0, 0.0);
+	glRotatef(rotationZ[area], 0.0, 0.0, 1.0);
+
+	foreach (Object* o, m_objectList) {
+		o->render();
+	}
 }
 
 void GLWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0, -0.5, -12.0);
-	glRotatef(rotationX, 1.0, 0.0, 0.0);
-	glRotatef(rotationY, 0.0, 1.0, 0.0);
-	glRotatef(rotationZ, 0.0, 0.0, 1.0);
-
-	foreach (Object* o, m_objectList) {
-		o->render();
+	for (int i = 0; i < AREA_NUM; i++) {
+		paintArea(i);
 	}
 }
 
@@ -123,18 +142,34 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 	lastPos = event->pos();
 }
 
+int GLWidget::getPointedArea(int x, int y)
+{
+	(void)y;
+
+	int area = 0;
+	for (int i = 1; i < AREA_NUM; i++) {
+		if (x > (m_windowSize.width() / AREA_NUM) * i) {
+			area = i;
+		}
+	}
+
+	return area;
+}
+
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	GLfloat dx = GLfloat(event->x() - lastPos.x()) / width();
 	GLfloat dy = GLfloat(event->y() - lastPos.y()) / height();
 
+	int area = getPointedArea(event->x(), event->y());
+
 	if (event->buttons() & Qt::LeftButton) {
-		rotationX += 180 * dx;
-		rotationY += 180 * dy;
+		rotationX[area] += 180 * dx;
+		rotationY[area] += 180 * dy;
 		updateGL();
 	} else if (event->buttons() & Qt::RightButton) {
-		rotationX += 180 * dy;
-		rotationZ += 180 * dx;
+		rotationX[area] += 180 * dy;
+		rotationZ[area] += 180 * dx;
 	}
 	lastPos = event->pos();
 }

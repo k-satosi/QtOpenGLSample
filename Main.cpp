@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
 	GLWidget w;
 	w.setWindowTitle(QObject::tr("Qt OpenGL Sample"));
-	w.resize(600, 600);
+	w.resize(1200, 600);
 	w.show();
 
 	return app.exec();
